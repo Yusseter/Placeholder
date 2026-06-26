@@ -91,17 +91,18 @@ void loop() {
 	lcd.clear();
 	lcd.setCursor(0, 0);
 
-	if (isnan(humidity) || isnan(temperature)) lcd.print("DHT Hatas\3");
+	if (isnan(humidity) || isnan(temperature)) lcd.print("DHT Hatas\3!");
 	else {
 		lcd.print("S\3cakl\3k: ");	lcd.print(temperature, 1);	lcd.print("\7C ");
+		lcd.setCursor(0, 1);
 		lcd.print("Nem: ");			lcd.print(humidity, 0);		lcd.print("%");
 	}
 
-	lcd.setCursor(0, 1);
+	lcd.setCursor(0, 2);
 
 	if (gasStatus == 0) {
 		lcd.print("Gaz Seviyesi: %"); lcd.print(gasPercent);
-		lcd.setCursor(0, 2);
+		lcd.setCursor(0, 3);
 		lcd.print("ALARM!");
 		servo.write(180);
 
@@ -109,7 +110,7 @@ void loop() {
 	}
 	else {
 		lcd.print("Gaz Seviyesi: %"); lcd.print(gasPercent);
-		lcd.setCursor(0, 2);
+		lcd.setCursor(0, 3);
 		lcd.print("Normal");
 
 		digitalWrite(BUZZER_PIN, LOW);
