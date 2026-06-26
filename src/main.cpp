@@ -58,6 +58,7 @@ void setup() {
 	lcd.clear();
 
 	loadTurkishChars(lcd);
+	loadDegreeSign(lcd);
 
 	dht.begin();
 	pinMode(MQ_DOUT_PIN, INPUT);
@@ -79,13 +80,13 @@ void loop() {
 	float temperature	= dht.readTemperature();
 	int gasStatus		= digitalRead(MQ_DOUT_PIN);
 	int gasRaw			= analogRead(MQ_AOUT_PIN);
-	int gasLevelPercent	= map(gasRaw, GAS_RAW_MIN, GAS_RAW_MAX, GAS_PERCENT_MIN, GAS_PERCENT_MAX);
+	int gasPercent		= map(gasRaw, GAS_RAW_MIN, GAS_RAW_MAX, GAS_PERCENT_MIN, GAS_PERCENT_MAX);
 
 	Serial.print("S\3cakl\3k: ");	Serial.print(temperature);	Serial.print("\7C");
 	Serial.print(" | Nem: ");		Serial.print(humidity);
 	Serial.print(" % | MQ D0: ");	Serial.print(gasStatus);
 	Serial.print(" | MQ Ham: ");	Serial.print(gasRaw);
-	Serial.print(" | MQ Y\6zde: ");	Serial.print(gasLevelPercent);	Serial.println(" %");
+	Serial.print(" | MQ Y\6zde: ");	Serial.print(gasPercent);	Serial.println(" %");
 
 	lcd.clear();
 	lcd.setCursor(0, 0);
@@ -99,14 +100,17 @@ void loop() {
 	lcd.setCursor(0, 1);
 
 	if (gasStatus == 0) {
-		lcd.print("Gaz Seviyesi: "); lcd.print(gasLevelPercent);
-		lcd.print(" ALARM!  ");
+		lcd.print("Gaz Seviyesi: %"); lcd.print(gasPercent);
+		lcd.setCursor(0, 2);
+		lcd.print("ALARM!");
 		servo.write(180);
 
 		digitalWrite(BUZZER_PIN, HIGH);
 	}
 	else {
-		lcd.print("Gaz:Normal %"); lcd.print(gasLevelPercent);
+		lcd.print("Gaz Seviyesi: %"); lcd.print(gasPercent);
+		lcd.setCursor(0, 2);
+		lcd.print("Normal");
 
 		digitalWrite(BUZZER_PIN, LOW);
 	}
