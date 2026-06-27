@@ -46,11 +46,36 @@ const int GAS_PERCENT_MAX = 100;
 
 Servo servo;
 
-// Yerleştirmeler
-String startupMessage = "Sistem Ba\5l\3yor";
+void clearLcdLine(int line) {
+	lcd.setCursor(0, line);
+
+	for (int i = 0; i < 20; i++) {
+		lcd.print(" ");
+	}
+
+	lcd.setCursor(0, line);
+}
+
+void showStartupAnimation() {
+	for (int repeat = 0; repeat < 2; repeat++) {
+		for (int dotCount = 0; dotCount <= 3; dotCount++) {
+			clearLcdLine(0);
+
+			lcd.print("Sistem Ba\5l\3yor");
+
+			for (int i = 0; i < dotCount; i++) {
+				lcd.print(".");
+			}
+
+			delay(500);
+		}
+	}
+
+	lcd.clear();
+}
 
 void setup() {
-	Serial.begin(9600);
+	Serial.begin(115200);
 	delay(1000);
 
 	Wire.begin(SDA_PIN, SCL_PIN);
@@ -70,10 +95,7 @@ void setup() {
 	servo.attach(SERVO_PIN);
 	servo.write(0);
 
-	lcd.setCursor(0, 0);
-	lcd.print(startupMessage);
-	delay(2000);
-	lcd.clear();
+	showStartupAnimation();
 }
 
 void loop() {
@@ -83,20 +105,29 @@ void loop() {
 	int gasRaw = analogRead(MQ_AOUT_PIN);
 	int gasPercent = map(gasRaw, GAS_RAW_MIN, GAS_RAW_MAX, GAS_PERCENT_MIN, GAS_PERCENT_MAX);
 
-	Serial.print("S\3cakl\3k: "); Serial.print(temperature); Serial.print("\7C");
-	Serial.print(" | Nem: "); Serial.print(humidity);
-	Serial.print(" % | MQ D0: "); Serial.print(gasStatus);
-	Serial.print(" | MQ Ham: "); Serial.print(gasRaw);
-	Serial.print(" | MQ Y\6zde: "); Serial.print(gasPercent); Serial.println(" %");
+	if (isnan(temperature)) Serial.println("Sıcaklık değeri geçersiz!");
+	else Serial.print("Sıcaklık: "); Serial.print(temperature); Serial.println("°C");
+
+	if (isnan(humidity)) Serial.println("Nem değeri geçersiz!");
+	else Serial.print("Nem: "); Serial.println(humidity);
+
+	if (isnan(gasStatus)) Serial.println("MQ değeri geçersiz!");
+	else Serial.print("MQ değeri: "); Serial.println(gasStatus);
+
+	if (isnan(gasRaw)) Serial.println("MQ ham değeri geçersiz!");
+	else Serial.print("MQ Ham: "); Serial.println(gasRaw);
+
+	if (isnan(gasPercent)) Serial.println("MQ yüzde değeri geçersiz!");
+	else Serial.print("MQ Yüzde: %"); Serial.println(gasPercent);
 
 	lcd.clear();
 	lcd.setCursor(0, 0);
 
 	if (isnan(humidity) || isnan(temperature)) lcd.print("DHT Hatas\3!");
 	else {
-		lcd.print("S\3cakl\3k: "); lcd.print(temperature, 1); lcd.print("\7C ");
+		lcd.print("S\3cakl\3k: "); lcd.print(temperature, 1); lcd.print("\7C");
 		lcd.setCursor(0, 1);
-		lcd.print("Nem: "); lcd.print(humidity, 0); lcd.print("%");
+		lcd.print("Nem: %"); lcd.print(humidity, 0);
 	}
 
 	lcd.setCursor(0, 2);
