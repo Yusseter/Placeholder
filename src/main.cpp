@@ -4,10 +4,10 @@
 #include <LiquidCrystal_I2C.h>
 #include <DHT.h>
 #include <Deneyap_Servo.h>
-#include <TurkishLCD.h> // Türkçe karakter desteği için oluşturduğumuz kütüphane
-#include <DegreeSignLCD.h> // Derece işareti desteği için oluşturduğumuz kütüphane
+#include <TurkishLCD.h> // Türkçe karakter desteği için oluşturduğumuz kütüphane.
+#include <DegreeSignLCD.h> // Derece işareti desteği için oluşturduğumuz kütüphane.
 /*
-Bu kütüphaneler de kullandığımız harfler aşağıdaki karşılıkları ile kullanılır.
+Bu kütüphaneler ile kullandığımız yeni karakterler aşağıdaki karşılıkları ile kullanılır.
 ç için \1,
 ğ için \2,
 ı için \3,
@@ -33,16 +33,17 @@ DHT dht(DHTPIN, DHTTYPE);
 #define MQ_DOUT_PIN D0
 #define MQ_AOUT_PIN A0
 
-const int GAS_RAW_MIN		= 0;
-const int GAS_RAW_MAX		= 4095;
-const int GAS_PERCENT_MIN	= 0;
-const int GAS_PERCENT_MAX	= 100;
+const int GAS_RAW_MIN = 0;
+const int GAS_RAW_MAX = 4095;
+const int GAS_PERCENT_MIN = 0;
+const int GAS_PERCENT_MAX = 100;
 
 // Buzzer tanımlamaları
 #define BUZZER_PIN D12
 
 // Servo tanımlamaları
 #define SERVO_PIN D8
+
 Servo servo;
 
 // Yerleştirmeler
@@ -76,26 +77,26 @@ void setup() {
 }
 
 void loop() {
-	float humidity		= dht.readHumidity();
-	float temperature	= dht.readTemperature();
-	int gasStatus		= digitalRead(MQ_DOUT_PIN);
-	int gasRaw			= analogRead(MQ_AOUT_PIN);
-	int gasPercent		= map(gasRaw, GAS_RAW_MIN, GAS_RAW_MAX, GAS_PERCENT_MIN, GAS_PERCENT_MAX);
+	float humidity = dht.readHumidity();
+	float temperature = dht.readTemperature();
+	int gasStatus = digitalRead(MQ_DOUT_PIN);
+	int gasRaw = analogRead(MQ_AOUT_PIN);
+	int gasPercent = map(gasRaw, GAS_RAW_MIN, GAS_RAW_MAX, GAS_PERCENT_MIN, GAS_PERCENT_MAX);
 
-	Serial.print("S\3cakl\3k: ");	Serial.print(temperature);	Serial.print("\7C");
-	Serial.print(" | Nem: ");		Serial.print(humidity);
-	Serial.print(" % | MQ D0: ");	Serial.print(gasStatus);
-	Serial.print(" | MQ Ham: ");	Serial.print(gasRaw);
-	Serial.print(" | MQ Y\6zde: ");	Serial.print(gasPercent);	Serial.println(" %");
+	Serial.print("S\3cakl\3k: "); Serial.print(temperature); Serial.print("\7C");
+	Serial.print(" | Nem: "); Serial.print(humidity);
+	Serial.print(" % | MQ D0: "); Serial.print(gasStatus);
+	Serial.print(" | MQ Ham: "); Serial.print(gasRaw);
+	Serial.print(" | MQ Y\6zde: "); Serial.print(gasPercent); Serial.println(" %");
 
 	lcd.clear();
 	lcd.setCursor(0, 0);
 
 	if (isnan(humidity) || isnan(temperature)) lcd.print("DHT Hatas\3!");
 	else {
-		lcd.print("S\3cakl\3k: ");	lcd.print(temperature, 1);	lcd.print("\7C ");
+		lcd.print("S\3cakl\3k: "); lcd.print(temperature, 1); lcd.print("\7C ");
 		lcd.setCursor(0, 1);
-		lcd.print("Nem: ");			lcd.print(humidity, 0);		lcd.print("%");
+		lcd.print("Nem: "); lcd.print(humidity, 0); lcd.print("%");
 	}
 
 	lcd.setCursor(0, 2);
@@ -112,6 +113,7 @@ void loop() {
 		lcd.print("Gaz Seviyesi: %"); lcd.print(gasPercent);
 		lcd.setCursor(0, 3);
 		lcd.print("Normal");
+		servo.write(0);
 
 		digitalWrite(BUZZER_PIN, LOW);
 	}
