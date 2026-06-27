@@ -21,7 +21,7 @@ Bu kütüphaneler ile kullandığımız yeni karakterler aşağıdaki karşılı
 #define SDA_PIN D14
 #define SCL_PIN D15
 
-LiquidCrystal_I2C lcd(0x27, 16, 2);
+LiquidCrystal_I2C lcd(0x27, 20, 4);
 
 // DHT sensör tanımlamaları
 #define DHTPIN D1
