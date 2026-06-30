@@ -1,6 +1,19 @@
+# Default
+* text=auto
+
+# Text files
+*.md text eol=lf
+*.json text eol=lf
+*.svg text eol=lf
+.editorconfig text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+
+# Binary files
 *.pdf binary
 *.docx binary
 *.stl binary
+*.ico binary
 *.jpg binary
 *.jpeg binary
 *.png binary
